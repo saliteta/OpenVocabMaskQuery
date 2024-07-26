@@ -17,12 +17,10 @@ import torch
 from stable_processing.feature_merge import Feature_merger, text_image_attention_display, store_visualization_result, only_attention
 from stable_processing.loader import load_visualization_data as load_data
 from stable_processing.loader import load_model
-from typing import Tuple
 
-from stable_processing.logging import print_with_color
+from stable_processing.color_logging import print_with_color
 
 import argparse
-from PIL import Image
 
 
 def parser():

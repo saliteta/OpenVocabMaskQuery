@@ -1,7 +1,7 @@
 import torch
 import open_clip
 from stable_processing.loader import load_dataset
-from stable_processing.logging import print_with_color
+from stable_processing.color_logging import print_with_color
 
 import argparse
 from tqdm import tqdm

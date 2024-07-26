@@ -62,14 +62,17 @@ CUDA_VISIBLE_DEVICES=2 python visualize.py \
 ```
 modify the result accordingly
 
+## Semantic Alignment Metrics
+We create a semantic alignment metrics as follow: 
+
+- We define the semantic consistancy as following. If the image feature one obtained is almost the same as within one cluster, the inter group semantic consistancy is well maintained. 
+- We define the semantic consistancy between different group's prototype is large, then the inter group contrastivity is large
+The method is defined here:
+![Consistancy Metrics](assets/metrics.png)
+The visualized result is shown here:
+![Consistancy Metrics](assets/consistancy_visualization.png)
 
 ## Semantic Smoothing Process
-Still on going
-
-- We need to filing in the blank
-- We need to smooth our semantic information so that it is multiview consistant
-- Don't know how to do it yet. Might use filtering? 
-- Might also calibrate original mask
-
-
-
+[] We need to smooth our semantic information so that it is multiview consistant
+[] Don't know how to do it yet. Might use filtering? 
+[] Might also calibrate original mask

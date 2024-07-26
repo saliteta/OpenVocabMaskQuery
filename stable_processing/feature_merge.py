@@ -6,7 +6,7 @@ from typing import Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from stable_processing.logging import print_with_color
+from stable_processing.color_logging import print_with_color
 
 
 class Feature_merger:
