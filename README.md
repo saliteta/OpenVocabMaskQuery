@@ -70,7 +70,9 @@ We create a semantic alignment metrics as follow:
 The method is defined here:
 ![Consistancy Metrics](assets/metrics.png)
 The visualized result is shown here:
-![Consistancy Metrics](assets/consistancy_visualization.png)
+![Consisanct Visualization](assets/consistancy_visualization.png)
+![Clustering](assets/clustering.png)
+!
 
 ## Semantic Smoothing Process
 [] We need to smooth our semantic information so that it is multiview consistant

@@ -99,6 +99,9 @@ class Image_Mask_Dataset(Dataset):
         # Apply transformations
         image_batch =  torch.cat((image_tensor, masked_images), dim=0)
 
+        if self.transform == None:
+            return image_batch
+
         return self.transform(image_batch)
 
     def align_mask_shape(self, H: int, W: int, masks: torch.Tensor) -> torch.Tensor:
