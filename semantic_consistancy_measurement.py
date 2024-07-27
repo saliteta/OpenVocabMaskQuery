@@ -42,9 +42,10 @@ if __name__ == '__main__':
     )
 
     print_with_color('Generate Measurement Metrics and Visualization ...', 'YELLOW')
-    metrics.plot_intra_label_variance(os.path.join(output_dir,'magnitude.png'))
-    metrics.visualize_cluster(os.path.join(output_dir, 'cluster.png'))
-    metrics.hint_cluster_generation(os.path.join(output_dir,'hint'))
+    metrics.plot_intra_label_variance(output_dir)
+    metrics.plot_inter_label_similarity(output_dir)
+    metrics.visualize_cluster(output_dir)
+    #metrics.hint_cluster_generation(os.path.join(output_dir,'hint'))
 
     print_with_color(f'All Done, result stored at {output_dir}', 'GREEN')
 

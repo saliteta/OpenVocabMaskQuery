@@ -2,15 +2,18 @@ import numpy as np
 import torch
 
 
-import cuml
-import matplotlib.pyplot as plt
+from typing import Tuple
 
 from stable_processing.loader import Image_Mask_Dataset
 from stable_processing.color_logging import print_with_color
-import random
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+import random
+import cuml
 
 import os
+
+import seaborn as sns
 
 class Consistancy_metrics:
     def __init__(
@@ -65,17 +68,37 @@ class Consistancy_metrics:
             intra_label_var[label] = variance
         return intra_label_var
 
-    def get_inter_label_difference(self) -> torch.Tensor:
-        """ Calculate the differences in means between labels. """
+    def get_inter_label_similarity(self) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """ 
+        Calculate the differences in means between labels using cosine similarity. 
+        
+        return
+        - sum_similarity: A (N, ) Tensor, where N is the the number of cluster, the value 
+        represent the similarity between this and other cluster. The lower, the better
+        - cosine_similarity: A (N, N) Tensor. Reprensent Pair-wise similarity between other 
+        different cluster. Used to plot heat map
+        - label: A (N,) each element represent the element names
+        """
         means = []
         labels = list(self.feature_label_correlation.keys())
+
+        # Compute means for each label
         for label in labels:
             mean = self.feature_label_correlation[label].mean(dim=0)
             means.append(mean)
-        
+
         means = torch.stack(means)
-        mean_diffs = torch.cdist(means, means, p=2)  # Compute pairwise Euclidean distances between means
-        return mean_diffs.mean().item()
+        means = means- means.mean(dim=0)
+        # Normalize the means
+        normalized_means = means / means.norm(dim=1, keepdim=True)
+
+        # Compute pairwise cosine similarity between normalized means
+        cosine_similarity = torch.mm(normalized_means, normalized_means.t())
+
+        # Since cosine similarity values range from -1 to 1, we can compute an average similarity value
+        mean_similarity = cosine_similarity.sum(dim=0)-1
+
+        return mean_similarity, cosine_similarity, labels
 
     def visualize_cluster(self, save_path:str) :
         """ Use PCA or t-SNE from cuml to reduce dimensions to 2D and visualize the clusters on GPU. """
@@ -112,16 +135,18 @@ class Consistancy_metrics:
         plt.title('Cluster Visualization')
         plt.grid(True)
 
-        plt.savefig(save_path)
+        plt.savefig(os.path.join(save_path, 'cluster'))
     
     def plot_intra_label_variance(self, save_path:str):
-        """ Plot the variance for each label and annotate with average inter-label mean difference. """
+        """ 
+            Plot the variance for each label 
+            Args:
+            - save_path, the output directory to save the path
+        """
         stats = self.get_intra_label_coherence()
         labels = list(stats.keys())
         variances = torch.tensor([stats[label] for label in labels]).cpu().numpy()  # Directly use scalar variance
 
-        # Get average of mean differences
-        mean_diff_avg = self.get_inter_label_difference()
 
         # Create bar plot
         plt.figure(figsize=(8, 6))
@@ -132,10 +157,28 @@ class Consistancy_metrics:
         plt.grid(True, linestyle='--', alpha=0.6)
 
         # Annotate with mean difference average
-        plt.figtext(0.99, 0.01, f'Avg. Inter-label Mean Diff: {mean_diff_avg:.2f}', 
+        plt.figtext(0.99, 0.01, f'Avg. Inter-label Mean Variance: {variances.mean():.2f}', 
                     horizontalalignment='right', fontsize=12, verticalalignment='bottom')
 
-        plt.savefig(save_path)
+        plt.savefig(os.path.join(save_path, 'intra_cluster_variance.png'))
+
+    def plot_inter_label_similarity(self, save_path:str) -> None:
+        """ 
+            Plot the inter cluster attributes for each label 
+            Args:
+            - save_path, the output directory to save the path
+        """
+        overall_similarity, pair_wise_mean, labels = self.get_inter_label_similarity()
+        self._plot_barchart(
+            overall_similarity=overall_similarity,
+            labels=labels,
+            path=os.path.join(save_path, 'inter_cluster_bar.png')
+        )
+        self._plot_heatmap(
+            cosine_similarity=pair_wise_mean,
+            labels=labels,
+            path=os.path.join(save_path, 'inter_cluster_heatmap.png')
+        )
 
     def hint_cluster_generation(self, save_path):
         '''
@@ -177,19 +220,35 @@ class Consistancy_metrics:
         plt.tight_layout()
         plt.savefig(location)
 
+    def _plot_heatmap(self, cosine_similarity: torch.Tensor, labels: torch.Tensor, path:str):
+        '''
+            Args: 
+            - Consine Similarity (N,N) pair wise similarity
+            - labels (N,) name of different cluster
+            - path: path to save fig
+        '''
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(cosine_similarity.cpu().numpy(), xticklabels=labels, yticklabels=labels, annot=True, cmap='coolwarm', center=0)
+        plt.title("Cosine Similarity Heatmap")
+        plt.savefig(path)
 
+    def _plot_barchart(self, overall_similarity:torch.Tensor, labels:torch.Tensor, path:str) -> None:
+        # Create bar plot
+        '''
+            Args: 
+            - overall_similarity (N,) sum of similarity inter cluster 
+            - labels (N,) name of different cluster
+            - path: path to save fig
 
-if __name__ == '__main__':
-    metrics = Consistancy_metrics(
-        labels_location='/home/planner/xiongbutian/ignores/output/refined_label.npz',
-        features_location='/home/planner/xiongbutian/ignores/clip_result/semantic_features.npz',
-        image_location='/home/planner/xiongbutian/ignores/images',
-        mask_location='/home/planner/xiongbutian/ignores/output/refined_mask.npz',
-        device='cuda'
-    )
+        '''
+        plt.figure(figsize=(8, 6))
+        plt.bar(labels, overall_similarity.cpu().numpy(), color='skyblue')
+        plt.xlabel('Labels')
+        plt.ylabel('Similarity per cluster')
+        plt.title('Sum of Similaryty')
+        plt.grid(True, linestyle='--', alpha=0.6)
 
-    metrics.plot_intra_label_variance('magnitude.png')
-    metrics.visualize_cluster('cluster.png')
-    metrics.hint_cluster_generation('/home/planner/xiongbutian/VLM_text_semantic_response/semantic_latent_retrival/stable_processing/hint')
+        plt.figtext(0.02, 0.02, f'Mean Sum of Similarity {overall_similarity.mean():.4f}. Var {overall_similarity.var():.4f}', 
+            horizontalalignment='left', fontsize=12, verticalalignment='bottom')
+        plt.savefig(path)
 
-    

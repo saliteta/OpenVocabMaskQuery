@@ -70,11 +70,13 @@ We create a semantic alignment metrics as follow:
 The method is defined here:
 ![Consistancy Metrics](assets/metrics.png)
 The visualized result is shown here:
-![Consisanct Visualization](assets/consistancy_visualization.png)
 ![Clustering](assets/clustering.png)
-!
+This graph give some masked result and their clustered result
+![PairWise Correlation](assets/cluster_pairwise.png)
+This shows the pair-wise similarity as heat map between different cluster
 
-## Semantic Smoothing Process
-[] We need to smooth our semantic information so that it is multiview consistant
-[] Don't know how to do it yet. Might use filtering? 
-[] Might also calibrate original mask
+## Merge&Deletion
+And after we check in detailed about the mask, we find that the mask some times overlapping with each others. To solve this problem we provide a smoothing stratgy
+We call it merge-and-deletion
+The method is displayed here:
+![PairWise Correlation](assets/merge_and_deletion.png)
