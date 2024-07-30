@@ -51,6 +51,8 @@ class Consistancy_metrics:
             Construct a dictionary whose key is label
             element is features
         '''
+
+
         self.feature_label_correlation = {element: [] for key in self.labels_dict for element in self.labels_dict[key]}
         for key in tqdm(self.labels_dict):
             for i, element in enumerate(self.labels_dict[key]):
@@ -251,4 +253,3 @@ class Consistancy_metrics:
         plt.figtext(0.02, 0.02, f'Mean Sum of Similarity {overall_similarity.mean():.4f}. Var {overall_similarity.var():.4f}', 
             horizontalalignment='left', fontsize=12, verticalalignment='bottom')
         plt.savefig(path)
-
