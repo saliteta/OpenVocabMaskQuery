@@ -11,15 +11,10 @@ import matplotlib.pyplot as plt
 import random
 import cuml
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
 import os
 
 import seaborn as sns
 
-<<<<<<< HEAD
 
 def yuv_to_rgb(yuv_data):
     # Conversion matrix adjusted for Y in [0, 1] and U, V in [-0.5, 0.5]
@@ -38,8 +33,6 @@ def yuv_to_rgb(yuv_data):
     
     return rgb_data
 
-=======
->>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
 class Consistancy_metrics:
     def __init__(
             self,
@@ -164,7 +157,6 @@ class Consistancy_metrics:
 
         plt.savefig(os.path.join(save_path, 'cluster'))
     
-<<<<<<< HEAD
 
     def visualize_cluster_continuous(self, save_path:str) :
         """ Use PCA or t-SNE from cuml to reduce dimensions to 2D and visualize the clusters on GPU. """
@@ -213,8 +205,6 @@ class Consistancy_metrics:
 
         plt.savefig(os.path.join(save_path, 'cluster_continuous'))
 
-=======
->>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
     def plot_intra_label_variance(self, save_path:str):
         """ 
             Plot the variance for each label 
@@ -282,7 +272,6 @@ class Consistancy_metrics:
                     hint_dict[int(label)] = [batched_masked_images[index+1]]
         
         for label in hint_dict:
-<<<<<<< HEAD
             try: 
                 title = f'for cluster {int(label)}'
                 self._four_sample_plot(
@@ -292,14 +281,6 @@ class Consistancy_metrics:
                 )
             except:
                 print_with_color(f"not enough picture skip {label}!!!!!", "RED")
-=======
-            title = f'for cluster {int(label)}'
-            self._four_sample_plot(
-                image_list = hint_dict[label],
-                title=title,
-                location = os.path.join(save_path, str(int(label))+'.png')
-            )
->>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
     
     def _four_sample_plot(self, image_list, title:str, location:str):
         fig, axes = plt.subplots(2, 2, figsize=(10, 10))
