@@ -6,7 +6,11 @@ from stable_processing.color_logging import print_with_color
 import argparse
 from tqdm import tqdm
 import numpy as np
+<<<<<<< HEAD
 import os
+=======
+
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
 
 
 
@@ -36,6 +40,7 @@ if __name__ == '__main__':
     device = args.device
     output_dir = args.output_dir
 
+<<<<<<< HEAD
     if os.path.exists(output_dir):
         print_with_color(f'{output_dir} already exists, skip folder creationg', 'YELLOW')
     else:
@@ -43,6 +48,9 @@ if __name__ == '__main__':
         print_with_color(f'created folder {output_dir}', 'GREEN')
 
         
+=======
+
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
     model, _, _ = open_clip.create_model_and_transforms(clip_version, pretrained=clip_checkpoint)
     model.eval()  # model in train mode by default, impacts some models with BatchNorm or stochastic depth active
     tokenizer = open_clip.get_tokenizer(clip_version)
@@ -74,10 +82,18 @@ if __name__ == '__main__':
 
             image_feature_dict[basename] = image_features.cpu().numpy()
 
+<<<<<<< HEAD
         saving_location = os.path.join(output_dir,'semantic_features.npz')
         np.savez_compressed(saving_location, **image_feature_dict)
         
         print_with_color(f'Image Feature extracting accomplished', 'GREEN')
         print_with_color(f'file location is at {saving_location}', 'GREEN')
+=======
+        
+        np.savez_compressed(f'{output_dir}/semantic_features.npz', **image_feature_dict)
+        
+        print_with_color(f'Image Feature extracting accomplished', 'GREEN')
+        print_with_color(f'file location is at {output_dir}/semantic_features.npz', 'GREEN')
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
 
             
