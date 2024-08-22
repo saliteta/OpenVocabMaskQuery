@@ -54,13 +54,8 @@ if __name__ == '__main__':
 
     print_with_color('Saving Results...', 'GREEN')
 
-<<<<<<< HEAD
     np.savez_compressed(os.path.join(output_dir,'refined_label.npz'), **label)
     np.savez_compressed(os.path.join(output_dir,'refined_mask.npz'), **masks)
-=======
-    np.savez_compressed(os.path.join(output_dir,'labels_dict_refined.npz'), **label)
-    np.savez_compressed(os.path.join(output_dir,'masks_refined.npz'), **masks)
->>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
 
 
     print_with_color(f'All Done, result stored at {output_dir}', 'GREEN')
