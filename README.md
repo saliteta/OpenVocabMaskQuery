@@ -80,3 +80,11 @@ And after we check in detailed about the mask, we find that the mask some times 
 We call it merge-and-deletion
 The method is displayed here:
 ![PairWise Correlation](assets/merge_and_deletion.png)
+<<<<<<< HEAD
+
+
+## Result Display
+![Refined Result](assets/refine_result.png)
+![Refined Hint](assets/refine_hint.png)
+=======
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35

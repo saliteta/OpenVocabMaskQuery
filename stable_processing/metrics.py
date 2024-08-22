@@ -11,10 +11,35 @@ import matplotlib.pyplot as plt
 import random
 import cuml
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
 import os
 
 import seaborn as sns
 
+<<<<<<< HEAD
+
+def yuv_to_rgb(yuv_data):
+    # Conversion matrix adjusted for Y in [0, 1] and U, V in [-0.5, 0.5]
+    M = np.array([
+        [1.0,  0.0,    1.403],  # 1.403 is an approximate value for 1.402 adjusted for range
+        [1.0, -0.344, -0.714],
+        [1.0,  1.773,  0.0]     # 1.773 is an approximate value for 1.772 adjusted for range
+    ])
+    
+    # Since your values are normalized, there is no need to add a constant offset
+    # Perform the matrix multiplication
+    rgb_data = np.dot(yuv_data, M.T)
+    
+    # Ensure the RGB values are within the valid range [0, 1]
+    rgb_data = np.clip(rgb_data, 0, 1)
+    
+    return rgb_data
+
+=======
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
 class Consistancy_metrics:
     def __init__(
             self,
@@ -139,6 +164,57 @@ class Consistancy_metrics:
 
         plt.savefig(os.path.join(save_path, 'cluster'))
     
+<<<<<<< HEAD
+
+    def visualize_cluster_continuous(self, save_path:str) :
+        """ Use PCA or t-SNE from cuml to reduce dimensions to 2D and visualize the clusters on GPU. """
+        '''
+        
+            The saved result will be in save_fig path
+        '''
+        all_data = []
+        labels = []
+        colors = plt.cm.rainbow(torch.linspace(0, 1, len(self.feature_label_correlation)))
+
+        # Gather all data and labels
+        for i, (label, features) in enumerate(self.feature_label_correlation.items()):
+            all_data.append(features)
+            labels.extend([i] * features.shape[0])  # Assign an integer label for each class
+
+        # Convert list of tensors to a single GPU tensor
+        all_data = torch.cat(all_data, dim=0).cuda()
+        labels = torch.tensor(labels).cuda()
+
+        # Dimensionality reduction with t-SNE using cuml
+        reducer = cuml.TSNE(n_components=2, random_state=5)
+        reduced_data = reducer.fit_transform(all_data)
+
+        # Move reduced data back to CPU for plotting
+        reduced_data = reduced_data.get()
+        x = reduced_data[:, 0]
+        y = reduced_data[:, 1]
+        fixed_luminance = 0.8
+
+        u = (x - np.min(x)) / (np.ptp(x)) - 0.5  # Normalize and shift to range [-0.5, 0.5]
+        v = (y - np.min(y)) / (np.ptp(y)) - 0.5  # Normalize and shift to range [-0.5, 0.5]
+
+        yuv_colors = np.stack([np.full_like(u, fixed_luminance), u, v], axis=-1)  
+
+        rgb_colors = yuv_to_rgb(yuv_colors)
+
+
+        # Plotting
+        plt.figure(figsize=(10, 7))
+        scatter = plt.scatter(x, y, c=rgb_colors, alpha=0.6)
+        plt.xlabel('Component 1')
+        plt.ylabel('Component 2')
+        plt.title('2D t-SNE with RGB colors representing 3D projection')
+        plt.grid(True)
+
+        plt.savefig(os.path.join(save_path, 'cluster_continuous'))
+
+=======
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
     def plot_intra_label_variance(self, save_path:str):
         """ 
             Plot the variance for each label 
@@ -206,12 +282,24 @@ class Consistancy_metrics:
                     hint_dict[int(label)] = [batched_masked_images[index+1]]
         
         for label in hint_dict:
+<<<<<<< HEAD
+            try: 
+                title = f'for cluster {int(label)}'
+                self._four_sample_plot(
+                    image_list = hint_dict[label],
+                    title=title,
+                    location = os.path.join(save_path, str(int(label))+'.png')
+                )
+            except:
+                print_with_color(f"not enough picture skip {label}!!!!!", "RED")
+=======
             title = f'for cluster {int(label)}'
             self._four_sample_plot(
                 image_list = hint_dict[label],
                 title=title,
                 location = os.path.join(save_path, str(int(label))+'.png')
             )
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
     
     def _four_sample_plot(self, image_list, title:str, location:str):
         fig, axes = plt.subplots(2, 2, figsize=(10, 10))

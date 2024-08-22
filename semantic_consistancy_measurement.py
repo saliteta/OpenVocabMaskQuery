@@ -9,7 +9,11 @@ from stable_processing.color_logging import print_with_color
 from stable_processing.metrics import Consistancy_metrics
 import argparse
 import os
+<<<<<<< HEAD
+import numpy as np
+=======
 
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
 
 def parser():
     parser = argparse.ArgumentParser("Semantic Consistancy Metrics Visualization", add_help=True)
@@ -32,6 +36,15 @@ if __name__ == '__main__':
     device = args.device
     output_dir = args.output_dir
 
+<<<<<<< HEAD
+    if os.path.exists(output_dir):
+        print_with_color(f'{output_dir} already exists, skip folder creationg', 'YELLOW')
+    else:
+        os.makedirs(output_dir)
+        print_with_color(f'created folder {output_dir}', 'GREEN')
+        
+=======
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
     print_with_color('loading dataset ...', 'YELLOW')
     metrics = Consistancy_metrics(
         labels_location=label_location,
@@ -45,9 +58,16 @@ if __name__ == '__main__':
     metrics.plot_intra_label_variance(output_dir)
     metrics.plot_inter_label_similarity(output_dir)
     metrics.visualize_cluster(output_dir)
+<<<<<<< HEAD
+    metrics.visualize_cluster_continuous(output_dir)
+=======
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
     metrics.hint_cluster_generation(os.path.join(output_dir,'hint'))
 
     print_with_color(f'All Done, result stored at {output_dir}', 'GREEN')
 
+<<<<<<< HEAD
+=======
 
     
+>>>>>>> 893896b9ad8263553cd0f19b797a270a941a3f35
